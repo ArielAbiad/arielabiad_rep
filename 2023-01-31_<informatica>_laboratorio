@@ -1,0 +1,182 @@
+ES.I
+//#include "stdafx.h";
+#include<iostream>
+#include<fstream>
+using namespace std;
+/*void*/ main(void){
+ ifstream matfile;
+ int matrice[10][7];
+ int i,j;
+ /*preparare un file con 70 valori separati da spazio e memorizzarlo col nome matrice.txt
+   il pathname che segue puo' essere modificato a piacere in funzione della cartella in cui 
+   memorizzare il file stesso */
+ matfile.open("D:\\Progetti\\Zanichelli\\Volume1\\10File\\InfV1Cap10\\matrice.txt");
+ for (i=0; i<10; i++)
+  for (j=0; j<7; j++)
+   matfile >> matrice[i][j];
+ matfile.close();
+ for (i=0; i<10; i++){
+  for (j=0; j<7; j++){
+   cout<<matrice[i][j]<<"  ";}
+  cout<<endl;
+ }
+}
+
+
+
+ES.2
+//#include "stdafx.h";
+#include<iostream>
+#include<fstream>
+using namespace std;
+/*void*/ main(void){
+ ifstream matfile;
+ int matrice[10][7];
+int i=0,j=0,k;
+ /*preparare un file con 70 valori separati da spazio e memorizzarlo col nome matrice.txt
+   il pathname che segue puo' essere modificato a piacere in funzione della cartella in cui 
+   memorizzare il file stesso */
+ matfile.open("D:\\Progetti\\Zanichelli\\Volume1\\10File\\InfV1Cap10\\matrice.txt");
+ matfile >> matrice[i][j];
+ while (!matfile.eof()){
+  j++;
+  if (j > 6){
+   j = 0;
+   i++;
+   if (i > 9)
+    break;
+ }
+ matfile >> matrice[i][j];
+}
+matfile.close();
+ for (i=0; i<10; i++){
+  for (j=0; j<7; j++)
+   cout<<matrice[i][j]<<"  ";
+  cout<<endl;
+ }
+}
+
+
+
+ES.3
+//#include "stdafx.h";
+#include<iostream>
+#include<fstream>
+using namespace std;
+#define FILE 35
+#define POSTI 40
+// funzione per il caricamento dal file delle prenotazioni
+void caricaDati(int sala[][POSTI]){
+  fstream teatro;
+  int i=0,j=0;
+  teatro.open("D:\\Progetti\\Zanichelli\\Volume1\\10File\\InfV1Cap10\\teatro.txt",ios::in);
+  teatro >> sala[i][j];
+  while (!teatro.eof()){
+   j++;
+   if (j >= POSTI){
+    j = 0;
+    i++;
+    if (i >= FILE)
+    break;
+  }
+  teatro >> sala[i][j];
+ }
+ teatro.close();
+}
+// funzione per il salvataggio su file delle prenotazioni
+void salvaDati(int sala[][POSTI]){
+ fstream teatro;
+ int i=0,j=0;
+ teatro.open("D:\\Progetti\\Zanichelli\\Volume1\\10File\\InfV1Cap10\\teatro.txt",ios::out);
+ for (i=0; i<FILE; i++){
+  for (j=0; j<POSTI; j++)
+   teatro << sala[i][j] << ' ';
+  teatro << endl;
+ }
+ teatro.close();
+}
+/*void*/ main(void){
+ int sala[FILE][POSTI];
+ int fila, posto;
+ caricaDati(sala);
+ while (true){
+  cout << "Inserire il numero di fila: ";
+  cin >> fila;
+  if (fila == 0)
+   break;
+  cout << "Inserire il numero di posto: ";
+  cin >> posto;
+  if ((fila <= 0) || (fila > FILE) || (posto <=0) || (posto > POSTI))
+   cout << "Coordinate di posto non valide" << endl;
+  else{
+	switch (sala[fila-1][posto-1]) {
+     case 0: cout << "Prenotazione effettuata" << endl;
+             sala[fila-1][posto-1]=1;
+             break;
+     case 1: cout << "Posto gi� prenotato" << endl;
+             break;
+     case 2: cout << "Posto riservato" << endl;
+             break;
+    }
+  }
+ }
+ salvaDati(sala);
+}
+
+
+
+ES.4
+//#include "stdafx.h";
+#include<iostream>
+#include<fstream>
+using namespace std;
+
+
+#define MAX_LEN 256
+// funzione per estrarre il prossimo elemento dalla stringa
+void estraiElemento(char rigain[], char elemento[]){
+  int i,k,j;
+  // ricerca fine stringa o carattere separatore
+  for (i=0; (i<MAX_LEN)&&(rigain[i]!='\0')&&(rigain[i]!=';'); i++);
+  // copia elemento
+   for (k=0; k<i; k++)
+    elemento[k]=rigain[k];
+    elemento[k]='\0';
+  // eliminazione dalla stringa dell'elemento trovato
+  j=0;
+  for (k=i+1; k<MAX_LEN; k++){
+   rigain[j]=rigain[k];
+   j++;
+  }
+}
+/*void*/int main(void){
+ ifstream tabfile;
+ char riga[MAX_LEN], elemento[MAX_LEN];
+ int i=1;
+ string citta, contatto, cognome, nome, indirizzo, cap;
+
+ tabfile.open("D:\\Progetti\\Zanichelli\\Volume1\\10File\\InfV1Cap10\\tabella.txt");
+ tabfile.getline(riga, MAX_LEN);
+ while (!tabfile.eof()){
+  cout << "Contatto n. " << i++ << endl;
+  cin>>contatto;
+  estraiElemento(riga, elemento);
+  cout << "Cognome: " << elemento << endl;
+   cin>>cognome;
+  estraiElemento(riga,elemento);
+  cout << "Nome: " << elemento << endl;
+   cin>>nome;
+  estraiElemento(riga,elemento);
+  cout << "Indirizzo: " << elemento << endl;
+  estraiElemento(riga,elemento);
+   cin>>indirizzo;
+  cout << "CAP: " << elemento << endl;
+   cin>>cap;
+  estraiElemento(riga,elemento);
+  cout << "Citta': " << elemento << endl;
+   cin>>citta;
+  tabfile.getline(riga,MAX_LEN);
+  system("pause");
+ }
+ tabfile.close();
+}
